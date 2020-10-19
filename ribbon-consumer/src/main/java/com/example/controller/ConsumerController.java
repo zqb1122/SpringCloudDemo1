@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.entity.Book;
+import com.example.service.HelloService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,9 +16,13 @@ public class ConsumerController {
 
     @Autowired
     RestTemplate restTemplate;
-    @RequestMapping(value = "/ribbon-consumer",method = RequestMethod.GET)
+
+    @Autowired
+    private HelloService helloService;
+
+    @RequestMapping(value = "/ribbon-consumer", method = RequestMethod.GET)
     public String helloController() {
-        return restTemplate.getForEntity("http://HELLO-SERVICE/hello", String.class).getBody();
+        return helloService.hello();
     }
 
     @RequestMapping("/gethello")
@@ -54,6 +59,5 @@ public class ConsumerController {
         ResponseEntity<Book> responseEntity = restTemplate.postForEntity("http://HELLO-SERVICE/getbook2", book, Book.class);
         return responseEntity.getBody();
     }
-
 
 }
