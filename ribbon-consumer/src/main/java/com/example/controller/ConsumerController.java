@@ -1,7 +1,10 @@
 package com.example.controller;
 
 import com.example.entity.Book;
+import com.example.service.BookCommand;
 import com.example.service.HelloService;
+import com.netflix.hystrix.HystrixCommand;
+import com.netflix.hystrix.HystrixCommandGroupKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -10,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @RestController
 public class ConsumerController {
@@ -58,6 +64,18 @@ public class ConsumerController {
         book.setName("红楼梦");
         ResponseEntity<Book> responseEntity = restTemplate.postForEntity("http://HELLO-SERVICE/getbook2", book, Book.class);
         return responseEntity.getBody();
+    }
+
+
+    @RequestMapping("/test1")
+    public Book test1() throws ExecutionException, InterruptedException {
+        BookCommand bookCommand = new BookCommand(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("")), restTemplate);
+        //同步调用
+        //Book book1 = bookCommand.execute();
+        //异步调用
+        Future<Book> queue = bookCommand.queue();
+        Book book = queue.get();
+        return book;
     }
 
 }
