@@ -1,7 +1,7 @@
 package com.example.controller;
 
 import com.example.entity.Book;
-import com.example.service.HelloService;
+import com.example.service.HelloService2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,7 +12,7 @@ import java.net.URLEncoder;
 @RestController
 public class FeignConsumerController {
     @Autowired
-    HelloService helloService;
+    HelloService2 helloService;
 
     @RequestMapping("/hello")
     public String hello() {
@@ -40,4 +40,5 @@ public class FeignConsumerController {
         book.setAuthor("曹雪芹");
         return helloService.hello(book);
     }
+
 }
